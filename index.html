@@ -6,31 +6,50 @@
   <title>Flipzy - Books delivered under 20 mins</title>
   <style>
     body {
+      font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f7f9fc;
+      background: #f5f5f5;
       color: #333;
     }
     header {
-      background-color: #4a90e2;
+      background: #74b9ff;
       color: white;
-      padding: 1rem;
+      padding: 1em;
       text-align: center;
     }
-    .tagline {
-      font-style: italic;
-      font-size: 0.9rem;
+    .tagline, .area, .timing {
+      margin: 0.2em 0;
+      font-size: 0.9em;
     }
-    .book-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1rem;
-      padding: 2rem;
+    .category-menu {
+      margin-top: 1em;
+    }
+    .category-menu button {
+      margin: 0.3em;
+      padding: 0.5em 1em;
+      border: none;
+      background: white;
+      color: #0984e3;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .category-menu button:hover {
+      background: #dfe6e9;
+    }
+    #book-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 1em;
     }
     .book-card {
       background: white;
       border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      margin: 1em;
+      padding: 1em;
+      width: 200px;
       transition: transform 0.2s;
       position: relative;
     }
@@ -39,173 +58,230 @@
     }
     .book-card img {
       width: 100%;
-      height: 300px;
-      object-fit: cover;
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
+      height: auto;
+      border-radius: 5px;
     }
-    .book-details {
-      padding: 1rem;
+    .book-card.out-of-stock {
+      background: #e0e0e0;
+      color: #999;
     }
-    .description {
+    .out-of-stock-label {
+      color: red;
+      font-weight: bold;
+      text-align: center;
+      margin-top: 0.5em;
+    }
+    .book-card button {
+      margin-top: 0.5em;
+      padding: 0.3em 0.6em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .desc {
       display: none;
-      font-size: 0.9rem;
-      color: #666;
-      margin-top: 0.5rem;
+      margin-top: 0.5em;
+      font-size: 0.85em;
     }
     .counter {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      margin-top: 0.5rem;
+      justify-content: space-between;
+      margin-top: 0.5em;
     }
-    .counter button {
-      padding: 0.2rem 0.5rem;
-      font-size: 1.2rem;
-    }
-    .btn {
-      background-color: #4a90e2;
+    #proceed-btn {
+      display: block;
+      margin: 2em auto;
+      padding: 1em 2em;
+      background: #0984e3;
       color: white;
       border: none;
-      padding: 0.5rem 1rem;
-      margin-top: 0.5rem;
-      border-radius: 5px;
+      border-radius: 10px;
       cursor: pointer;
     }
-    .btn:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
+    #guidelines {
+      max-width: 700px;
+      margin: 2em auto;
+      padding: 1em;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    #guidelines h2 {
+      color: #0984e3;
     }
     footer {
-      padding: 2rem;
       text-align: center;
+      padding: 1em;
+      background: #eee;
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Flipzy</h1>
-    <div class="tagline">Books delivered under 20 mins</div>
-    <p>Currently serving: Sector 44A, Seawoods</p>
+    <h1 style="display: flex; align-items: center; justify-content: center; gap: 0.5em;">
+     <img src="resources/logo.png" alt="Flipzy Logo" style="height: 40px;" />
+      Flipzy
+    </h1>
+
+    <p class="tagline">Books delivered under 20 mins</p>
+    <p class="area">Serving Sector 44A, Seawoods</p>
+    <p class="timing">Timing: Mon–Sun, 10 AM to 9 PM</p>
+    <nav class="category-menu" id="category-menu">
+      <!-- Buttons will be generated here -->
+    </nav>
   </header>
 
-  <main class="book-list" id="bookList"></main>
+  <main id="book-container"></main>
+  <button id="proceed-btn" onclick="proceedToIssue()">Proceed to Issue</button>
 
-  <div style="text-align:center">
-    <button class="btn" onclick="proceedToIssue()">Proceed to Issue</button>
-  </div>
-
-  <footer>
+  <!-- ✅ Guidelines Section -->
+  <section id="guidelines">
     <h2>Guidelines</h2>
-    <ul style="text-align:left; max-width: 600px; margin: 0 auto;">
-      <li>Pay upon delivery.</li>
-      <li>A refundable deposit of ₹100 is required after delivery.</li>
-      <li>Return the book in the same condition you received it.</li>
-      <li>No writing or marking in books.</li>
-      <li>Damage to books will result in deposit deductions.</li>
+    <ul>
+      <li>All books must be returned in good condition.</li>
+      <li>Late returns will incur a fine of ₹5/day.</li>
+      <li>Each user can issue a maximum of 3 books at a time.</li>
+      <li>Refundable deposit of ₹100 is required for every order.</li>
+      <li>Delivery is currently only available in Sector 44A, Seawoods.</li>
     </ul>
-  </footer>
+  </section>
 
   <script>
     const books = [
       {
-        title: "The Alchemist",
+        title: "Atomic Habits",
+        image: "resources/atomic.jpg",
         rate: 10,
-        img: "https://images.unsplash.com/photo-1544717302-de2939b7ef71",
-        description: "A fable about following your dreams by Paulo Coelho.",
-        outOfStock: false,
+        description: "An easy & proven way to build good habits & break bad ones.",
+        available: true,
+        category: "Self Help"
       },
       {
-        title: "Sapiens",
+        title: "The Alchemist",
+        image: "resources/alchemist.jpg",
+        rate: 12,
+        description: "A philosophical story about a shepherd’s journey to find treasure.",
+        available: true,
+        category: "Fiction"
+      },
+      {
+        title: "Rich Dad Poor Dad",
+        image: "resources/richdad.jpg",
         rate: 15,
-        img: "https://images.unsplash.com/photo-1512820790803-83ca734da794",
-        description: "A brief history of humankind by Yuval Noah Harari.",
-        outOfStock: true,
+        description: "A book on financial independence and building wealth.",
+        available: false,
+        category: "Finance"
       }
     ];
 
     const cart = {};
+    let currentFilter = 'all';
 
-    function renderBooks() {
-      const bookList = document.getElementById("bookList");
-      bookList.innerHTML = "";
-      books.forEach((book, index) => {
-        const card = document.createElement("div");
-        card.className = "book-card";
-        if (book.outOfStock) {
-          card.style.filter = "grayscale(100%)";
-        }
+    function renderCategoryButtons() {
+      const menu = document.getElementById('category-menu');
+      menu.innerHTML = ''; // ✅ Clear previous buttons
 
-        card.innerHTML = `
-          <img src="${book.img}" alt="${book.title}" />
-          <div class="book-details">
-            <h3>${book.title}</h3>
-            <p>₹${book.rate}/day</p>
-            <button class="btn" onclick="toggleCart(${index})" ${book.outOfStock ? 'disabled' : ''}>Add to Cart</button>
-            <button class="btn" onclick="toggleDescription(${index})">Description</button>
-            <div class="description" id="desc-${index}">${book.description}</div>
-            <div class="counter" id="counter-${index}" style="display:none">
-              <button onclick="changeDays(${index}, -1)">-</button>
-              <span id="days-${index}">1</span> day(s)
-              <button onclick="changeDays(${index}, 1)">+</button>
-            </div>
-          </div>
-        `;
+      const allBtn = document.createElement('button');
+      allBtn.textContent = "All Books";
+      allBtn.onclick = () => filterBooks('all');
+      menu.appendChild(allBtn);
 
-        bookList.appendChild(card);
+      const uniqueCategories = [...new Set(books.map(b => b.category))];
+      uniqueCategories.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.textContent = cat;
+        btn.onclick = () => filterBooks(cat);
+        menu.appendChild(btn);
       });
     }
 
-    function toggleDescription(index) {
-      const desc = document.getElementById(`desc-${index}`);
-      desc.style.display = desc.style.display === "none" ? "block" : "none";
+    function renderBooks(filter = 'all') {
+      const container = document.getElementById('book-container');
+      container.innerHTML = '';
+
+      books.forEach(book => {
+        if (filter !== 'all' && book.category !== filter) return;
+
+        const card = document.createElement('div');
+        card.className = 'book-card' + (!book.available ? ' out-of-stock' : '');
+
+        card.innerHTML = `
+          <img src="${book.image}" alt="${book.title}" />
+          <h3>${book.title}</h3>
+          <p>₹${book.rate}/day</p>
+          <button onclick="toggleDescription(this)">Description</button>
+          <p class="desc">${book.description}</p>
+        `;
+
+        if (!book.available) {
+          const outLabel = document.createElement('p');
+          outLabel.className = 'out-of-stock-label';
+          outLabel.textContent = 'Out of Stock';
+          card.appendChild(outLabel);
+        } else {
+          const counter = document.createElement('div');
+          counter.className = 'counter';
+
+          const minus = document.createElement('button');
+          minus.textContent = '-';
+          minus.onclick = () => adjustDays(book.title, -1);
+
+          const display = document.createElement('span');
+	  display.id = `days-${book.title}`;
+          display.textContent = `${cart[book.title] || 0} day(s)`;
+
+          const plus = document.createElement('button');
+          plus.textContent = '+';
+          plus.onclick = () => adjustDays(book.title, 1);
+
+          counter.append(minus, display, plus);
+          card.appendChild(counter);
+        }
+
+        container.appendChild(card);
+      });
     }
 
-    function toggleCart(index) {
-      const counter = document.getElementById(`counter-${index}`);
-      const book = books[index];
-      if (counter.style.display === "none") {
-        counter.style.display = "flex";
-        cart[book.title] = 1;
-      } else {
-        counter.style.display = "none";
-        delete cart[book.title];
-      }
+    function toggleDescription(btn) {
+      const desc = btn.nextElementSibling;
+      desc.style.display = desc.style.display === 'block' ? 'none' : 'block';
     }
 
-    function changeDays(index, delta) {
-      const span = document.getElementById(`days-${index}`);
-      const book = books[index];
-      let days = cart[book.title];
-      days = Math.max(1, days + delta);
-      cart[book.title] = days;
-      span.innerText = days;
+    function adjustDays(title, change) {
+      cart[title] = Math.max(0, (cart[title] || 0) + change);
+      document.getElementById(`days-${title}`).textContent = `${cart[title]} day(s)`;
+
     }
 
     function proceedToIssue() {
-      if (Object.keys(cart).length === 0) {
-        alert("Please select at least one book to proceed.");
-        return;
-      }
-      let message = "Hello! I'd like to issue the following books from Flipzy:%0A";
+      let msg = "Hello! I want to issue the following books:\n\n";
       let total = 0;
-      for (const title in cart) {
-        const book = books.find(b => b.title === title);
-        const days = cart[title];
-        const cost = days * book.rate;
-        message += `%0A📘 ${title} - ₹${book.rate}/day x ${days} day(s) = ₹${cost}`;
-        total += cost;
-      }
-      message += `%0A%0ASubtotal: ₹${total}`;
-      message += `%0ADeposit: ₹100`;
-      message += `%0ATotal Payable: ₹${total + 100}`;
 
-      const url = `https://wa.me/918369444435?text=${message}`;
-      window.open(url, "_blank");
+      for (const title in cart) {
+        if (cart[title] > 0) {
+          const book = books.find(b => b.title === title);
+          const cost = cart[title] * book.rate;
+          msg += `📘 ${title} - ${cart[title]} day(s) x ₹${book.rate} = ₹${cost}\n`;
+          total += cost;
+        }
+      }
+
+      if (total === 0) return alert("Add at least one book to proceed.");
+
+      msg += `\nSubtotal: ₹${total}\nRefundable Deposit: ₹100\nTotal Payable: ₹${total + 100}`;
+      const encoded = encodeURIComponent(msg);
+      window.location.href = `https://wa.me/YOURNUMBERHERE?text=${encoded}`;
     }
 
-    renderBooks();
+    function filterBooks(category) {
+      currentFilter = category;
+      renderBooks(category);
+    }
+
+    // Initial rendering
+    renderCategoryButtons();
+    renderBooks(currentFilter);
   </script>
 </body>
 </html>
