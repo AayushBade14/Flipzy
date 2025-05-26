@@ -1,234 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Flipzy - Books Delivered in 20 Mins</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flipzy - Books delivered under 20 mins</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #f9f9f9;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+    body {
+      background-color: #f4f4f9;
       color: #333;
     }
-
     header {
-      background: #4B6587;
+      background-color: #4a90e2;
       color: white;
-      padding: 20px;
+      padding: 1rem 2rem;
       text-align: center;
     }
-
     header h1 {
-      margin: 0;
+      font-size: 2rem;
     }
-
     header p {
-      margin-top: 5px;
-      font-size: 14px;
-      color: #d1d1d1;
+      font-size: 1rem;
+      margin-top: 0.2rem;
     }
-
-    .tagline {
-      background: #f1c40f;
-      padding: 10px;
-      text-align: center;
-      font-weight: bold;
+    .location {
+      font-size: 0.85rem;
+      margin-top: 0.3rem;
+      opacity: 0.9;
     }
-
-    .book-grid {
+    .book-container {
       display: flex;
       flex-wrap: wrap;
+      gap: 1rem;
+      padding: 2rem;
       justify-content: center;
-      padding: 20px;
     }
-
     .book-card {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-      margin: 15px;
-      padding: 15px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
       width: 220px;
-      transition: transform 0.2s ease;
-      cursor: pointer;
+      padding: 1rem;
+      transition: transform 0.3s;
       position: relative;
     }
-
     .book-card:hover {
       transform: translateY(-5px);
     }
-
-    .book-card img {
+    .book-card.out-of-stock {
+      filter: grayscale(1);
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .book-cover {
       width: 100%;
       height: 250px;
       object-fit: cover;
       border-radius: 8px;
     }
-
-    .book-info {
-      margin-top: 10px;
+    .book-title {
+      margin: 0.5rem 0;
+      font-weight: 600;
     }
-
-    .book-info h3 {
-      margin: 10px 0 5px;
+    .book-desc {
+      font-size: 0.85rem;
+      color: #555;
+      display: none;
     }
-
-    .days-input {
-      margin-top: 5px;
-      width: 100%;
-      padding: 5px;
+    .rate {
+      margin: 0.5rem 0;
     }
-
-    .out-of-stock {
-      opacity: 0.5;
-      pointer-events: none;
+    .counter {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      display: none;
     }
-
-    .checkout-btn {
-      display: block;
-      margin: 30px auto;
-      background: #2ecc71;
+    .counter span {
+      padding: 0.3rem 0.8rem;
+      background: #4a90e2;
       color: white;
-      padding: 15px 25px;
-      border: none;
-      font-size: 18px;
-      border-radius: 8px;
       cursor: pointer;
+      border-radius: 5px;
     }
-
-    .checkout-btn:hover {
-      background: #27ae60;
+    .issue-btn {
+      margin-top: 0.8rem;
+      padding: 0.4rem 0.8rem;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
     }
-
     .guidelines {
-      padding: 20px;
-      background: #ecf0f1;
-      margin-top: 30px;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
     }
-
     .guidelines h2 {
-      text-align: center;
+      margin-bottom: 1rem;
+      color: #4a90e2;
     }
-
     .guidelines ul {
-      max-width: 600px;
-      margin: 0 auto;
+      padding-left: 1.2rem;
     }
-
     .guidelines li {
-      margin-bottom: 10px;
+      margin-bottom: 0.6rem;
     }
   </style>
 </head>
 <body>
-
   <header>
     <h1>Flipzy</h1>
-    <p>Serving Sector 44A, Seawoods</p>
+    <p>Books delivered under 20 mins</p>
+    <p class="location">Currently serving: Sector 44A, Seawoods</p>
   </header>
 
-  <div class="tagline">Books delivered under 20 mins</div>
-
-  <div class="book-grid" id="bookGrid"></div>
-
-  <button class="checkout-btn" onclick="checkout()">Proceed to Issue Books</button>
+  <div class="book-container" id="bookList"></div>
 
   <div class="guidelines">
     <h2>Guidelines</h2>
     <ul>
-      <li>Payment is made at the time of delivery.</li>
-      <li>A small refundable deposit of ₹100 is collected upon delivery.</li>
-      <li>Books must be returned in the same condition they were issued.</li>
-      <li>Do not write or draw on the books.</li>
-      <li>Damaged books may incur deductions from the deposit.</li>
+      <li>Pay at the time of delivery.</li>
+      <li>A deposit of ₹100 is required upon delivery and will be refunded after the book is returned.</li>
+      <li>Return the book in the same condition you received it.</li>
+      <li>No writing or markings on the books.</li>
+      <li>Any damage will result in deductions from your deposit.</li>
     </ul>
   </div>
 
   <script>
     const books = [
       {
-        title: "Atomic Habits",
-        rate: 15,
-        image: "https://images-na.ssl-images-amazon.com/images/I/51-uspgqWIL._SX329_BO1,204,203,200_.jpg",
-        description: "A powerful guide to building good habits and breaking bad ones.",
-        inStock: true
-      },
-      {
         title: "The Alchemist",
-        rate: 12,
-        image: "https://images-na.ssl-images-amazon.com/images/I/51Z0nLAfLmL._SX320_BO1,204,203,200_.jpg",
-        description: "A novel about following your dreams and listening to your heart.",
-        inStock: false
+        rate: 10,
+        image: "https://m.media-amazon.com/images/I/51Z0nLAfLmL.jpg",
+        description: "A novel by Paulo Coelho about a boy chasing his dreams.",
+        inStock: true
       },
       {
-        title: "Deep Work",
-        rate: 18,
-        image: "https://images-na.ssl-images-amazon.com/images/I/41xShlnTZTL._SX332_BO1,204,203,200_.jpg",
-        description: "Rules for focused success in a distracted world.",
+        title: "Rich Dad Poor Dad",
+        rate: 15,
+        image: "https://m.media-amazon.com/images/I/81bsw6fnUiL.jpg",
+        description: "A personal finance classic by Robert Kiyosaki.",
         inStock: true
+      },
+      {
+        title: "Out of Stock Book",
+        rate: 20,
+        image: "https://via.placeholder.com/150",
+        description: "This book is currently unavailable.",
+        inStock: false
       }
     ];
 
-    let cart = [];
+    const cart = [];
 
     function renderBooks() {
-      const grid = document.getElementById('bookGrid');
-      grid.innerHTML = '';
+      const bookList = document.getElementById('bookList');
+      bookList.innerHTML = '';
       books.forEach((book, index) => {
         const card = document.createElement('div');
-        card.className = `book-card ${!book.inStock ? 'out-of-stock' : ''}`;
+        card.className = `book-card ${book.inStock ? '' : 'out-of-stock'}`;
+
         card.innerHTML = `
-          <img src="${book.image}" alt="${book.title}" />
-          <div class="book-info">
-            <h3>${book.title}</h3>
-            <p>₹${book.rate}/day</p>
-            <input class="days-input" type="number" min="1" placeholder="Days to issue" onchange="updateCart(${index}, this.value)">
-            <p style="display:none;" id="desc-${index}">${book.description}</p>
+          <img src="${book.image}" class="book-cover" />
+          <div class="book-title">${book.title}</div>
+          <div class="rate">₹${book.rate}/day</div>
+          <div class="book-desc">${book.description}</div>
+          <div class="counter" id="counter-${index}">
+            <span onclick="updateDays(${index}, -1)">-</span>
+            <span id="days-${index}">1</span>
+            <span onclick="updateDays(${index}, 1)">+</span>
           </div>
+          <button class="issue-btn" onclick="toggleCart(${index})" id="btn-${index}">Add to cart</button>
         `;
-        card.onclick = () => {
-          alert(book.description);
-        };
-        grid.appendChild(card);
+
+        card.addEventListener('click', (e) => {
+          if (!e.target.classList.contains('issue-btn')) {
+            const desc = card.querySelector('.book-desc');
+            desc.style.display = desc.style.display === 'block' ? 'none' : 'block';
+          }
+        });
+
+        bookList.appendChild(card);
       });
     }
 
-    function updateCart(index, days) {
-      const book = books[index];
-      const existing = cart.find(b => b.title === book.title);
-      if (existing) {
-        existing.days = Number(days);
+    function toggleCart(index) {
+      const existing = cart.find(b => b.index === index);
+      if (!existing) {
+        cart.push({ index, days: 1 });
+        document.getElementById(`counter-${index}`).style.display = 'flex';
+        document.getElementById(`btn-${index}`).textContent = 'Added';
       } else {
-        cart.push({ ...book, days: Number(days) });
+        cart.splice(cart.indexOf(existing), 1);
+        document.getElementById(`counter-${index}`).style.display = 'none';
+        document.getElementById(`days-${index}`).textContent = '1';
+        document.getElementById(`btn-${index}`).textContent = 'Add to cart';
+      }
+    }
+
+    function updateDays(index, delta) {
+      const item = cart.find(b => b.index === index);
+      if (item) {
+        item.days = Math.max(1, item.days + delta);
+        document.getElementById(`days-${index}`).textContent = item.days;
       }
     }
 
     function checkout() {
-      if (cart.length === 0) {
-        alert("Please select at least one book to issue.");
-        return;
-      }
+      if (cart.length === 0) return alert("No books in cart.");
 
-      let message = "Hello! I'd like to issue the following books:\n\n";
+      let message = "Hi, I'd like to issue the following books:\n";
       let total = 0;
 
-      cart.forEach(book => {
-        const cost = book.days * book.rate;
+      cart.forEach(item => {
+        const book = books[item.index];
+        const cost = book.rate * item.days;
         total += cost;
-        message += `• ${book.title} - ₹${book.rate}/day × ${book.days} day(s) = ₹${cost}\n`;
+        message += `\nTitle: ${book.title}\nDays: ${item.days}\nRate: ₹${book.rate}/day\nSubtotal: ₹${cost}\n`;
       });
 
-      message += `\nTotal Rent: ₹${total}`;
-      message += `\nRefundable Deposit: ₹100`;
-      message += `\n----------------------------\nFinal Payable on Delivery: ₹${total + 100}`;
+      message += `\nDeposit: ₹100\nTotal Rent: ₹${total}\nGrand Total (Rent + Deposit): ₹${total + 100}`;
 
-      const encodedMsg = encodeURIComponent(message);
-      const phoneNumber = '919876543210'; // Change to your WhatsApp number
-      window.open(`https://wa.me/${phoneNumber}?text=${encodedMsg}`, '_blank');
+      const whatsappURL = `https://wa.me/91xxxxxxxxxx?text=${encodeURIComponent(message)}`;
+      window.open(whatsappURL, '_blank');
     }
 
     renderBooks();
   </script>
+
+  <div style="text-align:center; padding: 1rem;">
+    <button onclick="checkout()" style="padding: 0.7rem 1.2rem; font-size: 1rem; background: #4a90e2; color: white; border: none; border-radius: 8px; cursor: pointer;">Proceed to Issue</button>
+  </div>
 </body>
 </html>
