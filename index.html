@@ -1070,7 +1070,7 @@
           minus.onclick = () => adjustDays(book.title, -1);
 
           const display = document.createElement('span');
-	  display.id = `weeks-${book.title}`;
+	  display.id = `days-${book.title}`;
           display.textContent = `${cart[book.title] || 0} week(s)`;
 
           const plus = document.createElement('button');
